@@ -1,7 +1,8 @@
-[gd_scene load_steps=3 format=2]
+[gd_scene load_steps=4 format=2]
 
 [ext_resource path="res://icon.png" type="Texture" id=1]
 [ext_resource path="res://Planet.gd" type="Script" id=2]
+[ext_resource path="res://Imports/icon.png" type="Texture" id=3]
 
 [node name="Planet" type="Button" groups=[
 "planet",
@@ -17,6 +18,13 @@ script = ExtResource( 2 )
 __meta__ = {
 "_edit_use_anchors_": false
 }
+worldName = null
+worldClass = null
+worldDesg = null
+worldTech = null
+techMod = null
+industry = null
+population = null
 
 [node name="Details" type="Label" parent="."]
 visible = false
@@ -33,4 +41,10 @@ Supplies: 0 (+100)"
 __meta__ = {
 "_edit_use_anchors_": false
 }
+
+[node name="warningIcon" type="Sprite" parent="."]
+visible = false
+position = Vector2( 38.959, -31.7822 )
+scale = Vector2( 0.038864, 0.038864 )
+texture = ExtResource( 3 )
 [connection signal="pressed" from="." to="." method="_on_Planet_pressed"]

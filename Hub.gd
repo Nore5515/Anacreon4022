@@ -57,3 +57,8 @@ func _on_TradeRoute_pressed():
 		world1Selecting = true
 	if selectedWorld != null:
 		tradeNotes.text = "Please hit 'esc' to deselect your current world."
+
+
+func assignTeam(teamName, teamColor):
+	if selectedWorld != null:
+		selectedWorld.setTeam(teamName, teamColor)

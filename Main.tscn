@@ -1,4 +1,4 @@
-[gd_scene load_steps=10 format=2]
+[gd_scene load_steps=12 format=2]
 
 [ext_resource path="res://icon.png" type="Texture" id=1]
 [ext_resource path="res://Planet.gd" type="Script" id=2]
@@ -9,6 +9,8 @@
 [ext_resource path="res://TradePanel.gd" type="Script" id=7]
 [ext_resource path="res://PlanetGenerator.gd" type="Script" id=8]
 [ext_resource path="res://Planet.tscn" type="PackedScene" id=9]
+[ext_resource path="res://Imports/icon.png" type="Texture" id=10]
+[ext_resource path="res://TeamButton.gd" type="Script" id=11]
 
 [node name="Main" type="Node2D"]
 script = ExtResource( 6 )
@@ -55,6 +57,12 @@ Supplies: 0 (+100)"
 __meta__ = {
 "_edit_use_anchors_": false
 }
+
+[node name="warningIcon" type="Sprite" parent="Planet2"]
+visible = false
+position = Vector2( 38.0664, -30.2764 )
+scale = Vector2( 0.0317115, 0.0317115 )
+texture = ExtResource( 10 )
 
 [node name="Camera2D" type="Camera2D" parent="."]
 position = Vector2( 510.909, 299.881 )
@@ -132,6 +140,32 @@ text = "Set Trade Route"
 __meta__ = {
 "_edit_use_anchors_": false
 }
+
+[node name="Team1" type="Button" parent="CanvasLayer"]
+modulate = Color( 0.494118, 0.423529, 1, 1 )
+margin_top = 124.189
+margin_right = 59.0
+margin_bottom = 144.189
+text = "Team 1"
+script = ExtResource( 11 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+teamName = "Team 1"
+teamColor = Color( 0.34902, 0.345098, 0.968627, 1 )
+
+[node name="Team2" type="Button" parent="CanvasLayer"]
+modulate = Color( 1, 0.447059, 0.447059, 1 )
+margin_top = 156.489
+margin_right = 59.0
+margin_bottom = 176.489
+text = "Team 2"
+script = ExtResource( 11 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+teamName = "Team 2"
+teamColor = Color( 1, 0.34902, 0.34902, 1 )
 
 [node name="Hub" type="Node2D" parent="CanvasLayer" groups=[
 "hub",
@@ -268,6 +302,17 @@ align = 1
 [node name="Timer" type="Timer" parent="."]
 wait_time = 15.0
 autostart = true
+
+[node name="PlanetDetails" type="Label" parent="."]
+visible = false
+margin_left = 878.877
+margin_right = 1026.0
+margin_bottom = 14.0
+text = "sdasd"
+autowrap = true
+__meta__ = {
+"_edit_use_anchors_": false
+}
 [connection signal="pressed" from="Planet2" to="Planet2" method="_on_Planet_pressed"]
 [connection signal="pressed" from="CanvasLayer/EndYear" to="CanvasLayer/EndYear" method="_on_EndYear_pressed"]
 [connection signal="pressed" from="CanvasLayer/SetChem" to="CanvasLayer/Hub" method="_on_SetChem_pressed"]
