@@ -78,7 +78,7 @@ script = ExtResource( 3 )
 
 [node name="PlanetGenerator" type="Node2D" parent="."]
 script = ExtResource( 8 )
-planetCount = 50
+planetCount = 3
 radius = 1000.0
 
 [node name="CanvasLayer" type="CanvasLayer" parent="."]

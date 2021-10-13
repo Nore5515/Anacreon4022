@@ -49,6 +49,8 @@ var chemPer = 0.25
 var metPer = 0.50
 var supPer = 0.25
 
+export (bool) var changedTeamThisYear = false
+
 func _ready():
 	init()
 
@@ -228,35 +230,34 @@ func endYear():
 	else:
 		supDanger = ""
 		
-	if team != "":
-		if getNearestPlanet().team != "":
-			if getNearestPlanet().team != team:
-				pass
-				# ENEMY TEAM
-			else:
-				pass
-				# MY TEAM
-		else:
-			getNearestPlanet().setTeam(team, modulate)
+	if team != "" && changedTeamThisYear == false:
+		print ("Teaming!")
+		var nearest = getNearestUnalignedPlanet()
+		if nearest == null:
+			print ("No unaligned planets!")
+		else: 
+			if nearest.team == "":
+				nearest.setTeam(team, modulate)
+				nearest.changedTeamThisYear = true
+	
+	changedTeamThisYear = false
 	
 	updateDetails()
 
-func getNearestPlanet():
-	var nearest
+func getNearestUnalignedPlanet():
+	var nearest 
 	for planet in get_tree().get_nodes_in_group("planet"):
 		if planet == self:
 			pass
-		elif planet.team == team:
+		elif planet.team != "":
 			pass
 		else:
 			if nearest == null:
 				nearest = planet
 			else:
-				if (self.get_global_rect().position-planet.get_global_rect().position).length() > (self.get_global_rect().position - nearest.get_global_rect().position).length():
+				if (self.get_global_rect().position-planet.get_global_rect().position).length() < (self.get_global_rect().position - nearest.get_global_rect().position).length():
 					nearest = planet
 	
-	if nearest == null:
-		nearest = self
 	return nearest
 
 func updateDetails():
