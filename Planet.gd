@@ -69,7 +69,9 @@ func init():
 		techMod = 0.5
 	elif (worldTech == "Warp"):
 		techMod = 1.0
-	updateDetails()
+	if worldClass == null:
+		worldClass = "Independent World"
+	#updateDetails()
 
 func addTrades(planetName, type, amount):
 	if (type == "chem"):
@@ -227,17 +229,35 @@ func endYear():
 		supDanger = ""
 		
 	if team != "":
-		print ("Aligned!")
+		if getNearestPlanet().team != "":
+			if getNearestPlanet().team != team:
+				pass
+				# ENEMY TEAM
+			else:
+				pass
+				# MY TEAM
+		else:
+			getNearestPlanet().setTeam(team, modulate)
 	
 	updateDetails()
 
 func getNearestPlanet():
 	var nearest
 	for planet in get_tree().get_nodes_in_group("planet"):
-		if nearest == null:
-			nearest = planet
+		if planet == self:
+			pass
+		elif planet.team == team:
+			pass
 		else:
-			if nearest.position
+			if nearest == null:
+				nearest = planet
+			else:
+				if (self.get_global_rect().position-planet.get_global_rect().position).length() > (self.get_global_rect().position - nearest.get_global_rect().position).length():
+					nearest = planet
+	
+	if nearest == null:
+		nearest = self
+	return nearest
 
 func updateDetails():
 	

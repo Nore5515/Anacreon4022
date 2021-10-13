@@ -21,6 +21,13 @@ __meta__ = {
 [node name="Line2D" type="Line2D" parent="."]
 
 [node name="Planet" parent="." instance=ExtResource( 9 )]
+worldName = "Anacreon"
+worldClass = "K-Type"
+worldDesg = "Mining World"
+worldTech = "Warp"
+techMod = 1.0
+industry = 150.0
+population = 4.0
 
 [node name="Planet2" type="Button" parent="." groups=[
 "planet",

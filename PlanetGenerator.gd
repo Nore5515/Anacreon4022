@@ -29,6 +29,7 @@ func randomizePlanet(p):
 	p.industry = p.population * 10 * p.techMod
 	p.desgPlanet("Independent World")
 	p.init()
+	p.updateDetails()
 	return p
 
 var worldNames = ["Earth", "Mars", "Venus", "Mercury", "Alpha Centari", "Dune"]
