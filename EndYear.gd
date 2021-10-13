@@ -8,6 +8,8 @@ func _on_EndYear_pressed():
 		planet.endYear()
 	year += 1
 	get_parent().get_node("Label").text = "Year: " + String(year)
+	get_parent().get_parent().get_node("TradeArtManager").clearAllShips()
+	get_parent().get_parent().get_node("TradeArtManager").addShips()
 
 
 func adjustPlanetGrowth(planet):

@@ -31,15 +31,21 @@ func setWorlds(_world1, _world2):
 func _on_Done_pressed():
 	
 	var line = false
+	var exporter
+	var importer
 	# Outgoing chems
 	if chemTrade > 0:
 		world1.addTrades(world2.worldName, "chem", -chemTrade)
 		world2.addTrades(world1.worldName, "chem", chemTrade)
 		line = true
+		exporter = world1
+		importer = world2
 	elif chemTrade < 0:
 		world1.addTrades(world2.worldName, "chem", chemTrade)
 		world2.addTrades(world1.worldName, "chem", -chemTrade)
 		line = true
+		exporter = world2
+		importer = world1
 	else:
 		world1.removeTrades(world2.worldName)
 		world2.removeTrades(world1.worldName)
@@ -56,6 +62,15 @@ func _on_Done_pressed():
 		world2Pos.y += world2.rect_size.y * 0.5
 		line2d.add_point(world1Pos, 0)
 		line2d.add_point(world2Pos, 1)
+		line2d.modulate = Color(0.3, 0.3, 1.0, 0.2)
+		
+		var exporterPos = exporter.rect_position
+		var importerPos = importer.rect_position
+		exporterPos.x += exporter.rect_size.x * 0.5
+		exporterPos.y += exporter.rect_size.y * 0.5
+		importerPos.x += importer.rect_size.x * 0.5
+		importerPos.y += importer.rect_size.y * 0.5
+		get_parent().get_parent().get_node("TradeArtManager").addTrade(exporterPos, importerPos)
 
 
 # In means going from 2 to 1
