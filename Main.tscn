@@ -28,13 +28,6 @@ script = ExtResource( 13 )
 default_color = Color( 0.4, 0.501961, 1, 0.415686 )
 
 [node name="Planet" parent="." instance=ExtResource( 9 )]
-worldName = "Anacreon"
-worldClass = "K-Type"
-worldDesg = "Mining World"
-worldTech = "Warp"
-techMod = 1.0
-industry = 150.0
-population = 4.0
 
 [node name="Planet2" type="Button" parent="." groups=[
 "planet",
@@ -360,6 +353,13 @@ polygon = PoolVector2Array( -39.6828, 26.2526, -9.49446, -50.0127, 11.5579, -50.
 [node name="icon" type="Sprite" parent="Fleet"]
 visible = false
 position = Vector2( 0, -75.7554 )
+scale = Vector2( 0.0228264, 0.0228264 )
+texture = ExtResource( 10 )
+
+[node name="inRange" type="Sprite" parent="Fleet"]
+modulate = Color( 0, 0.486275, 1, 1 )
+position = Vector2( 0, 58.4714 )
+rotation = -3.14159
 scale = Vector2( 0.0228264, 0.0228264 )
 texture = ExtResource( 10 )
 [connection signal="pressed" from="Planet2" to="Planet2" method="_on_Planet_pressed"]

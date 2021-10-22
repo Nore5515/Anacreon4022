@@ -22,6 +22,25 @@ func _process(delta):
 	position += movement
 	look_at(destination)
 	rotate(PI*0.5)
+	
+	#80
+	if (getNearestPlanet().get_global_rect().position - (self.position + Vector2(50, 25))).length() <= 80:
+		$inRange.visible = true
+	else:
+		$inRange.visible = false
+
+
+func getNearestPlanet():
+	var nearest 
+	for planet in get_tree().get_nodes_in_group("planet"):
+		if nearest == null:
+			nearest = planet
+		else:
+			if (self.position-planet.get_global_rect().position).length() < (self.position - nearest.get_global_rect().position).length():
+				nearest = planet
+	
+	return nearest
+	
 
 func _input(event):
 	if event.is_action_pressed("mouseClick"):
@@ -34,19 +53,19 @@ func _input(event):
 					instance.texture = load("res://Imports/icon.png")
 					instance.scale = Vector2(0.023, 0.023)
 					get_parent().call_deferred("add_child", instance)
-					instance.position = event.position
+					instance.position = get_global_mouse_position()
 					destIcon = instance
-					destination = event.position
+					destination = get_global_mouse_position()
 				else:
 					destIcon.queue_free()
 					var instance = Sprite.new()
 					instance.texture = load("res://Imports/icon.png")
 					instance.scale = Vector2(0.023, 0.023)
 					get_parent().call_deferred("add_child", instance)
-					instance.position = event.position
+					instance.position = get_global_mouse_position()
 					destIcon = instance
-					destination = event.position
-	if event.is_action_pressed("esc"):
+					destination = get_global_mouse_position()
+	if event.is_action_pressed("esc") || event.is_action_pressed("rightClick"):
 		if selected:
 			deselect()
 
