@@ -7,14 +7,28 @@ var selected = false
 var destination = Vector2()
 var destIcon
 
+var fuel = 100.0
 
 func select():
 	selected = true
 	$icon.visible = true
+	updateStatus()
+	get_parent().get_node("CanvasLayer/RefuelFleet").visible = true
 
 func deselect():
 	selected = false
 	$icon.visible = false
+	get_parent().get_node("CanvasLayer/FleetStatus").text = ""
+	get_parent().get_node("CanvasLayer/RefuelFleet").visible = false
+
+func updateStatus():
+	var thing = "FLEET STATUS\n" \
+		+ "Fighters - 0\n"\
+		+ "Transports - 0\n"\
+		+ "Jumpships - 0\n"\
+		+ "Jumptransports - 0\n"\
+		+ "Fuel: " + String(stepify(fuel, 0.01))
+	get_parent().get_node("CanvasLayer/FleetStatus").text = thing
 
 func _process(delta):
 	var movement = destination - position
@@ -22,12 +36,17 @@ func _process(delta):
 	position += movement
 	look_at(destination)
 	rotate(PI*0.5)
+	fuel -= 0.5 * delta
 	
-	#80
+	if selected:
+		updateStatus()
+	
 	if (getNearestPlanet().get_global_rect().position - (self.position + Vector2(50, 25))).length() <= 80:
 		$inRange.visible = true
+		get_parent().get_node("CanvasLayer/RefuelFleet").disabled = false
 	else:
 		$inRange.visible = false
+		get_parent().get_node("CanvasLayer/RefuelFleet").disabled = true
 
 
 func getNearestPlanet():

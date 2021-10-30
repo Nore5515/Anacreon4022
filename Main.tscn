@@ -306,6 +306,30 @@ rect_scale = Vector2( 0.131555, 0.140981 )
 text = "0"
 align = 1
 
+[node name="FleetStatus" type="Label" parent="CanvasLayer"]
+margin_left = 878.877
+margin_top = 23.9128
+margin_right = 996.877
+margin_bottom = 105.913
+text = "FLEET STATUS
+Fighters - 0
+Transports - 0
+Jumpships - 0
+Jumptransports - 0"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="RefuelFleet" type="Button" parent="CanvasLayer"]
+margin_left = 878.877
+margin_top = 138.433
+margin_right = 890.877
+margin_bottom = 158.433
+text = "Refuel Fleet"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
 [node name="Timer" type="Timer" parent="."]
 wait_time = 15.0
 autostart = true
@@ -326,7 +350,9 @@ position = Vector2( 274.205, 387.79 )
 scale = Vector2( 0.434346, 0.434346 )
 texture = ExtResource( 12 )
 
-[node name="Fleet" type="Node2D" parent="."]
+[node name="Fleet" type="Node2D" parent="." groups=[
+"fleet",
+]]
 position = Vector2( 256.688, 75.7555 )
 script = ExtResource( 14 )
 
@@ -375,6 +401,7 @@ texture = ExtResource( 10 )
 [connection signal="pressed" from="CanvasLayer/TradePanel/maxInChem" to="CanvasLayer/TradePanel" method="_on_maxInChem_pressed"]
 [connection signal="pressed" from="CanvasLayer/TradePanel/maxOutChem" to="CanvasLayer/TradePanel" method="_on_maxOutChem_pressed"]
 [connection signal="pressed" from="CanvasLayer/TradePanel/zero" to="CanvasLayer/TradePanel" method="_on_zero_pressed"]
+[connection signal="pressed" from="CanvasLayer/RefuelFleet" to="CanvasLayer/Hub" method="_on_RefuelFleet_pressed"]
 [connection signal="timeout" from="Timer" to="." method="_on_Timer_timeout"]
 [connection signal="mouse_entered" from="Fleet/Area2D" to="Fleet" method="_on_Area2D_mouse_entered"]
 [connection signal="mouse_exited" from="Fleet/Area2D" to="Fleet" method="_on_Area2D_mouse_exited"]

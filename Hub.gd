@@ -62,3 +62,9 @@ func _on_TradeRoute_pressed():
 func assignTeam(teamName, teamColor):
 	if selectedWorld != null:
 		selectedWorld.setTeam(teamName, teamColor)
+
+
+func _on_RefuelFleet_pressed():
+	for child in get_tree().get_nodes_in_group("fleet"):
+		if child.selected:
+			child.fuel = 100
