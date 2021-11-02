@@ -153,7 +153,7 @@ modulate = Color( 0.494118, 0.423529, 1, 1 )
 margin_top = 124.189
 margin_right = 59.0
 margin_bottom = 144.189
-text = "Team 1"
+text = "Team 1 (Player)"
 script = ExtResource( 11 )
 __meta__ = {
 "_edit_use_anchors_": false

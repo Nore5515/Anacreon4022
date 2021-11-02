@@ -1,0 +1,47 @@
+[gd_scene load_steps=2 format=2]
+
+[ext_resource path="res://MainMenu.gd" type="Script" id=1]
+
+[node name="MainMenu" type="Node2D"]
+script = ExtResource( 1 )
+
+[node name="Label" type="Label" parent="."]
+margin_left = 278.697
+margin_top = 3.8147e-06
+margin_right = 386.697
+margin_bottom = 14.0
+rect_scale = Vector2( 4.45962, 4.45962 )
+text = "ANACREON 4021"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Button" type="Button" parent="."]
+margin_left = 414.977
+margin_top = 524.245
+margin_right = 462.977
+margin_bottom = 544.245
+rect_scale = Vector2( 3.05357, 3.05357 )
+text = "Begin"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Label2" type="Label" parent="."]
+margin_left = 305.707
+margin_top = 230.815
+margin_right = 390.707
+margin_bottom = 244.815
+rect_scale = Vector2( 1.88447, 1.88447 )
+text = "Team Name: "
+
+[node name="LineEdit" type="LineEdit" parent="."]
+margin_left = 463.432
+margin_top = 230.815
+margin_right = 689.252
+margin_bottom = 254.815
+text = "Team 1"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+[connection signal="pressed" from="Button" to="." method="_on_Button_pressed"]

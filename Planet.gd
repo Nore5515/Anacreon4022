@@ -229,16 +229,17 @@ func endYear():
 			supDanger = "!!!"
 	else:
 		supDanger = ""
-		
-	if team != "" && changedTeamThisYear == false:
-		print ("Teaming!")
-		var nearest = getNearestUnalignedPlanet()
-		if nearest == null:
-			print ("No unaligned planets!")
-		else: 
-			if nearest.team == "":
-				nearest.setTeam(team, modulate)
-				nearest.changedTeamThisYear = true
+	
+	if team != "Team 1":
+		if team != "" && changedTeamThisYear == false:
+			print ("Teaming!")
+			var nearest = getNearestUnalignedPlanet()
+			if nearest == null:
+				print ("No unaligned planets!")
+			else: 
+				if nearest.team == "":
+					nearest.setTeam(team, modulate)
+					nearest.changedTeamThisYear = true
 	
 	changedTeamThisYear = false
 	
