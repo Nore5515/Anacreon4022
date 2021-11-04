@@ -8,22 +8,26 @@ var destination = Vector2()
 var destIcon
 
 var fuel = 100.0
+var fighters = 0
 
 func select():
 	selected = true
 	$icon.visible = true
 	updateStatus()
 	get_parent().get_node("CanvasLayer/RefuelFleet").visible = true
+	get_parent().get_node("CanvasLayer/StockFleet").visible = true
 
 func deselect():
 	selected = false
 	$icon.visible = false
 	get_parent().get_node("CanvasLayer/FleetStatus").text = ""
 	get_parent().get_node("CanvasLayer/RefuelFleet").visible = false
+	get_parent().get_node("CanvasLayer/StockFleet").visible = false
 
 func updateStatus():
+	print (fighters)
 	var thing = "FLEET STATUS\n" \
-		+ "Fighters - 0\n"\
+		+ "Fighters - " + String(fighters) + "\n"\
 		+ "Transports - 0\n"\
 		+ "Jumpships - 0\n"\
 		+ "Jumptransports - 0\n"\
@@ -41,12 +45,14 @@ func _process(delta):
 	if selected:
 		updateStatus()
 	
-	if (getNearestPlanet().get_global_rect().position - (self.position + Vector2(50, 25))).length() <= 80:
-		$inRange.visible = true
-		get_parent().get_node("CanvasLayer/RefuelFleet").disabled = false
-	else:
-		$inRange.visible = false
-		get_parent().get_node("CanvasLayer/RefuelFleet").disabled = true
+		if (getNearestPlanet().get_global_rect().position - (self.position + Vector2(50, 25))).length() <= 80:
+			$inRange.visible = true
+			get_parent().get_node("CanvasLayer/RefuelFleet").disabled = false
+			get_parent().get_node("CanvasLayer/StockFleet").disabled = false
+		else:
+			$inRange.visible = false
+			get_parent().get_node("CanvasLayer/RefuelFleet").disabled = true
+			get_parent().get_node("CanvasLayer/StockFleet").disabled = true
 
 
 func getNearestPlanet():

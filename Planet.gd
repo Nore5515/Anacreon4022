@@ -49,7 +49,13 @@ var chemPer = 0.25
 var metPer = 0.50
 var supPer = 0.25
 
+var fighters = 0
+var fightersPer = 0.0
+var fighterGrowth = 0
+
 export (bool) var changedTeamThisYear = false
+
+var disasters = []
 
 func _ready():
 	init()
@@ -147,9 +153,15 @@ func desgPlanet(newDesg):
 func _on_Planet_pressed():
 	$Details.visible = !$Details.visible
 	get_tree().get_nodes_in_group("hub")[0].setPlanet(self)
+	get_tree().get_nodes_in_group("sliders")[0].setPlanet(self)
 
 
 func endYear():
+	
+	disasters = []
+	
+	metDraw += (fightersPer*5) * metalsGrowth
+	
 	chemicals += ceil(chemicalGrowth-chemDraw)
 	metals += ceil(metalsGrowth-metDraw)
 	supplies += ceil(suppliesGrowth-supDraw)
@@ -191,19 +203,25 @@ func endYear():
 		chemicals = 0
 		efficency = efficency * 0.9
 		status += "Chem Shortages   "
+		disasters.append("ChemDrought")
 		$warningIcon.visible = true
 	if metals < 0:
 		metals = 0
 		industry = industry * 0.8
 		status += "Industrial Collapse   "
+		disasters.append("IndustrialCollapse")
 		$warningIcon.visible = true
 	if supplies < 0:
 		supplies = 0
 		population = population * 0.8
 		status += "Famine   "
+		disasters.append("Famine")
 		$warningIcon.visible = true
+
+	if metals > 0:
+		fighters += floor(fightersPer * industry * efficency * 0.1)
 	
-	population += 1.2 * ((26-population)/26)
+	population += 1.1 * ((26-population)/26)
 	idealIndustry = population * 20 * techMod
 	if (idealIndustry > industry):
 		industry += (idealIndustry - industry) * 0.25
@@ -229,9 +247,14 @@ func endYear():
 			supDanger = "!!!"
 	else:
 		supDanger = ""
+
 	
-	if team != "Team 1":
-		if team != "" && changedTeamThisYear == false:
+	if team != get_node("/root/Global").playerTeam:
+		
+		if team != "":
+			AIaction()
+		
+		"""if team != "" && changedTeamThisYear == false:
 			print ("Teaming!")
 			var nearest = getNearestUnalignedPlanet()
 			if nearest == null:
@@ -239,11 +262,116 @@ func endYear():
 			else: 
 				if nearest.team == "":
 					nearest.setTeam(team, modulate)
-					nearest.changedTeamThisYear = true
+					nearest.changedTeamThisYear = true"""
 	
 	changedTeamThisYear = false
+
 	
 	updateDetails()
+
+
+
+#### AI MIND
+var aiMemory = {
+	"daysWithSup": 0,
+	"famineScars": 0,
+	"fleetDelay": 100,
+}
+
+func AIaction():
+	print ("================\nAi Acting!")
+	
+	aiMemory.fleetDelay -= fighters
+	if aiMemory.fleetDelay <= 0:
+		aiMemory.fleetDelay = 100
+		var fleetType = load("res://Fleet.tscn")
+		var instance = fleetType.instance()
+		get_parent().call_deferred("add_child", instance)
+		instance.position.x = rect_position.x
+		instance.position.y = rect_position.y
+		instance.fighters += fighters
+		fighters = 0
+		updateDetails()
+	
+	if disasters.has("Famine"):
+		print ("FAMINE!!!!")
+		aiMemory.famineScars += 1
+		aiMemory.daysWithSup = 0
+		if supPer < 0.8:
+			changePerTo("sup", 0.8)
+		elif supPer >= 0.8:
+			changePerTo("sup", 1.0)
+		print ("New sup per: ", supPer)
+	elif supDanger != "":
+		if supPer < 0.7:
+			changePerTo("sup", supPer + 0.2)
+		elif supPer >= 0.7 && supPer <= 0.9:
+			changePerTo("sup", supPer + 0.1)
+		elif supPer >= 0.9:
+			changePerTo("sup", 1.0)
+		aiMemory.daysWithSup = 0
+		print ("Starvation danger! Raising sup%...")
+		print ("New sup per: ", supPer)
+	else:
+		print ("Food supply steady...")
+		aiMemory.daysWithSup += 1
+		if (aiMemory.famineScars*2) + 3 < aiMemory.daysWithSup:
+			print ("It's time to switch production!") 
+			if supPer > 0.2:
+				print (supPer, "current sup per")
+				changePerTo("sup", supPer - 0.2)
+				print (supPer, "post sup per")
+			else:
+				print ("not enough sup production!")
+			aiMemory.daysWithSup = 0
+
+
+func changePerTo(perType, amount):
+	var numOfCoreOptions = 3
+	var numOfSecondaryOptions = 1
+	
+	if perType == "sup" || perType == "met" || perType == "chem":
+		numOfCoreOptions -= 1
+	elif perType == "fig":
+		numOfSecondaryOptions -= 1
+	
+	var totalOptions = (numOfCoreOptions * 2) + numOfSecondaryOptions
+	
+	var remainingPer = 1 - amount
+	print ("A", remainingPer)
+	if (remainingPer <= 0):
+		remainingPer = 0
+	else:
+		remainingPer = remainingPer/totalOptions
+	print ("B", remainingPer)
+	
+	if perType == "sup":
+		supPer = amount
+	if perType == "met":
+		metPer = amount
+	if perType == "chem":
+		chemPer = amount
+	if perType == "fig":
+		fightersPer = amount
+	
+	if perType != "sup":
+		#print ("NOT SUP")
+		supPer = remainingPer * 2
+	if perType != "met":
+		#print ("NOT MET")
+		metPer = remainingPer * 2
+	if perType != "chem":
+		#print ("NOT CHEM")
+		chemPer = remainingPer * 2
+	if perType != "fig":
+		#print ("NOT FIG")
+		fightersPer = remainingPer
+	print ("C", chemPer, ",", metPer, ",", supPer, ",", fightersPer)
+	
+	if (supPer+metPer+chemPer+fightersPer) != 1:
+		print ("ERR PER TOTAL WRONG", (supPer+metPer+chemPer+fightersPer))
+	
+	get_parent().get_node("CanvasLayer/Adjustments").updateDetails()
 
 func getNearestUnalignedPlanet():
 	var nearest 
@@ -274,5 +402,6 @@ func updateDetails():
 	string += "\n\n" + chemDanger + "Chemicals: " + String(chemicals) + " [" + String(chemicalGrowth-chemDraw) + "] (+" + String(chemicalGrowth) + ")  (-" + String (chemDraw) + ")"
 	string += "\n" + metDanger + "Metals: " + String(metals) + " [" + String(metalsGrowth-metDraw) + "] (+" + String(metalsGrowth) + ")  (-" + String (metDraw) + ")"
 	string += "\n" + supDanger + "Supplies: " + String(supplies) + " [" + String(suppliesGrowth-supDraw) + "]  (-" + String (supDraw) + ")"
+	string += "\n" + "Fighters: " + String(fighters) + " [" + String(fighterGrowth) + "]"
 	string += "\n\nTRADES: " + String(chemTrades)
 	$Details.text = string

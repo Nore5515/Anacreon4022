@@ -8,7 +8,7 @@ func _ready():
 	global = get_node("/root/Global")
 	$Planet.desgPlanet("Independent World")
 	get_node("CanvasLayer/Team1").text = global.playerTeam
-
+	get_node("CanvasLayer/Team1").teamName = global.playerTeam
 
 
 func _on_Timer_timeout():
