@@ -1,6 +1,12 @@
 extends Node
 
 var playerTeam = ""
+var playerColor = Color.blue
+
+var aiTeam = "Team 2"
+var aiColor = Color.red
+
+#global = get_node("/root/Global")
 
 # Called when the node enters the scene tree for the first time.
 func _ready():

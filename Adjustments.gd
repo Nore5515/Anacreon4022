@@ -4,6 +4,7 @@ extends Control
 var currentPlanet
 export (bool) var displayOnly = false
 
+
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	pass # Replace with function body.
@@ -26,50 +27,61 @@ func updatePlanet(chem,met,sup,fig):
 
 func updateDetails():
 	if currentPlanet != null:
-		$ChemSlider/ChemLabel.text = "Chemicals: " + String(currentPlanet.chemPer)
-		$MetSlider/MetLabel.text = "Metals: " + String(currentPlanet.metPer)
-		$SupSlider/SupLabel.text = "Supplies: " + String(currentPlanet.supPer)
-		$FigSlider/FigLabel.text = "Fighters: " + String(currentPlanet.fightersPer)
-		$ChemSlider.value = currentPlanet.chemPer * 100
-		$MetSlider.value = currentPlanet.metPer * 100
-		$SupSlider.value = currentPlanet.supPer * 100
-		$FigSlider.value = currentPlanet.fightersPer * 100
+		$ChemSlider/ChemLabel.text = "Chemicals: " + String($ChemSlider.value/100)
+		$MetSlider/MetLabel.text = "Metals: " + String($MetSlider.value/100)
+		$SupSlider/SupLabel.text = "Supplies: " + String($SupSlider.value/100)
+		$FigSlider/FigLabel.text = "Fighters: " + String($FigSlider.value/100)
+		#$ChemSlider.value = currentPlanet.chemPer * 100
+		#$MetSlider.value = currentPlanet.metPer * 100
+		#$SupSlider.value = currentPlanet.supPer * 100
+		#$FigSlider.value = currentPlanet.fightersPer * 100
+
+func balanceValues():
+	pass
 
 func _on_ChemSlider_value_changed(value):
 	if currentPlanet != null && !displayOnly:
-		currentPlanet.chemPer = $ChemSlider.value/100
+		#currentPlanet.chemPer = $ChemSlider.value/100
 		var remainder = ($ChemSlider.value + $MetSlider.value + $SupSlider.value+$FigSlider.value)-100
 		$MetSlider.value -= remainder * 0.5
 		$SupSlider.value -= remainder * 0.5
 		if ($ChemSlider.value + $MetSlider.value + $SupSlider.value+$FigSlider.value) > 100:
 			$ChemSlider.value = 100 - ($MetSlider.value + $SupSlider.value + $FigSlider.value)
-		updatePlanet($ChemSlider.value/100, $MetSlider.value/100, $SupSlider.value/100, $FigSlider.value/100)
+		updateDetails()
+		#updatePlanet($ChemSlider.value/100, $MetSlider.value/100, $SupSlider.value/100, $FigSlider.value/100)
 
 func _on_MetSlider_value_changed(value):
 	if currentPlanet != null && !displayOnly:
-		currentPlanet.metPer = $MetSlider.value/100
+		#currentPlanet.metPer = $MetSlider.value/100
 		var remainder = ($ChemSlider.value + $MetSlider.value + $SupSlider.value +$FigSlider.value)-100
 		$ChemSlider.value -= remainder * 0.5
 		$SupSlider.value -= remainder * 0.5
 		if ($ChemSlider.value + $MetSlider.value + $SupSlider.value+$FigSlider.value) > 100:
 			$MetSlider.value = 100 - ($ChemSlider.value + $SupSlider.value + $FigSlider.value)
-		updatePlanet($ChemSlider.value/100, $MetSlider.value/100, $SupSlider.value/100, $FigSlider.value/100)
-
+		updateDetails()
+		#updatePlanet($ChemSlider.value/100, $MetSlider.value/100, $SupSlider.value/100, $FigSlider.value/100)
+	
 func _on_SupSlider_value_changed(value):
 	if currentPlanet != null && !displayOnly:
-		currentPlanet.supPer = $SupSlider.value/100
+		#currentPlanet.supPer = $SupSlider.value/100
 		var remainder = ($ChemSlider.value + $MetSlider.value + $SupSlider.value+$FigSlider.value)-100
 		$ChemSlider.value -= remainder * 0.5
 		$MetSlider.value -= remainder * 0.5
 		if ($ChemSlider.value + $MetSlider.value + $SupSlider.value+$FigSlider.value) > 100:
 			$SupSlider.value = 100 - ($MetSlider.value + $ChemSlider.value + $FigSlider.value)
-		updatePlanet($ChemSlider.value/100, $MetSlider.value/100, $SupSlider.value/100, $FigSlider.value/100)
-
+		updateDetails()
+		#updatePlanet($ChemSlider.value/100, $MetSlider.value/100, $SupSlider.value/100, $FigSlider.value/100)
+	
 func _on_FigSlider_value_changed(value):
 	if currentPlanet != null && !displayOnly:
-		currentPlanet.fightersPer = $FigSlider.value/100
+		#currentPlanet.fightersPer = $FigSlider.value/100
 		var remainder = ($ChemSlider.value + $MetSlider.value + $SupSlider.value+$FigSlider.value)-100
 		$ChemSlider.value -= remainder * 0.5
 		$MetSlider.value -= remainder * 0.5
 		$SupSlider.value -= remainder * 0.5
-		updatePlanet($ChemSlider.value/100, $MetSlider.value/100, $SupSlider.value/100, $FigSlider.value/100)
+		updateDetails()
+		#updatePlanet($ChemSlider.value/100, $MetSlider.value/100, $SupSlider.value/100, $FigSlider.value/100)
+
+
+func _on_ConfirmChange_pressed():
+	updatePlanet($ChemSlider.value/100, $MetSlider.value/100, $SupSlider.value/100, $FigSlider.value/100)

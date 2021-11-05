@@ -286,6 +286,7 @@ func AIaction():
 		aiMemory.fleetDelay = 100
 		var fleetType = load("res://Fleet.tscn")
 		var instance = fleetType.instance()
+		instance.assignTeam(get_node("/root/Global").aiTeam, get_node("/root/Global").aiColor)
 		get_parent().call_deferred("add_child", instance)
 		instance.position.x = rect_position.x
 		instance.position.y = rect_position.y
@@ -371,7 +372,7 @@ func changePerTo(perType, amount):
 	if (supPer+metPer+chemPer+fightersPer) != 1:
 		print ("ERR PER TOTAL WRONG", (supPer+metPer+chemPer+fightersPer))
 	
-	get_parent().get_node("CanvasLayer/Adjustments").updateDetails()
+	#get_parent().get_node("CanvasLayer/Adjustments").updateDetails()
 
 func getNearestUnalignedPlanet():
 	var nearest 
@@ -396,8 +397,8 @@ func updateDetails():
 	string += "\nDESG: " + worldDesg
 	string += "\nTech: " + worldTech
 	string += "\nEfficency: " + String(efficency)
-	string += "\nIndustry: " + String(industry) + " (" + String(idealIndustry) + ")"
-	string += "\nPopulation: " + String(population) + " Billions"
+	string += "\nIndustry: " + String(stepify(industry,0.1)) + " (" + String((stepify(idealIndustry,0.1))) + ")"
+	string += "\nPopulation: " + String(stepify(population,0.1)) + " Billions"
 	string += "\nStatus: " + status
 	string += "\n\n" + chemDanger + "Chemicals: " + String(chemicals) + " [" + String(chemicalGrowth-chemDraw) + "] (+" + String(chemicalGrowth) + ")  (-" + String (chemDraw) + ")"
 	string += "\n" + metDanger + "Metals: " + String(metals) + " [" + String(metalsGrowth-metDraw) + "] (+" + String(metalsGrowth) + ")  (-" + String (metDraw) + ")"

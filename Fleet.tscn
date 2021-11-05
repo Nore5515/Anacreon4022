@@ -4,7 +4,9 @@
 [ext_resource path="res://Imports/ship.png" type="Texture" id=2]
 [ext_resource path="res://Fleet.gd" type="Script" id=3]
 
-[node name="Fleet" type="Node2D"]
+[node name="Fleet" type="Node2D" groups=[
+"fleet",
+]]
 position = Vector2( 256.688, 75.7555 )
 script = ExtResource( 3 )
 

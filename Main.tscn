@@ -1,4 +1,4 @@
-[gd_scene load_steps=16 format=2]
+[gd_scene load_steps=15 format=2]
 
 [ext_resource path="res://icon.png" type="Texture" id=1]
 [ext_resource path="res://Planet.gd" type="Script" id=2]
@@ -13,7 +13,6 @@
 [ext_resource path="res://TeamButton.gd" type="Script" id=11]
 [ext_resource path="res://Imports/ship.png" type="Texture" id=12]
 [ext_resource path="res://TradeArtManager.gd" type="Script" id=13]
-[ext_resource path="res://Fleet.gd" type="Script" id=14]
 [ext_resource path="res://Adjustments.gd" type="Script" id=15]
 
 [node name="Main" type="Node2D"]
@@ -351,6 +350,16 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
+[node name="InvadeFleet" type="Button" parent="CanvasLayer"]
+margin_left = 878.877
+margin_top = 238.15
+margin_right = 967.877
+margin_bottom = 258.15
+text = "Invade Planet"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
 [node name="LaunchAttack" type="Button" parent="CanvasLayer"]
 margin_left = 910.236
 margin_top = 395.201
@@ -393,7 +402,6 @@ script = ExtResource( 15 )
 __meta__ = {
 "_edit_use_anchors_": false
 }
-displayOnly = true
 
 [node name="ChemSlider" type="HSlider" parent="CanvasLayer/Adjustments"]
 margin_right = 100.0
@@ -459,6 +467,15 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
+[node name="ConfirmChange" type="Button" parent="CanvasLayer/Adjustments"]
+margin_top = 75.8176
+margin_right = 12.0
+margin_bottom = 95.8176
+text = "Confirm Change"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
 [node name="Timer" type="Timer" parent="."]
 wait_time = 15000.0
 autostart = true
@@ -478,45 +495,6 @@ __meta__ = {
 position = Vector2( 274.205, 387.79 )
 scale = Vector2( 0.434346, 0.434346 )
 texture = ExtResource( 12 )
-
-[node name="Fleet" type="Node2D" parent="." groups=[
-"fleet",
-]]
-position = Vector2( 256.688, 75.7555 )
-script = ExtResource( 14 )
-
-[node name="ship" type="Sprite" parent="Fleet"]
-position = Vector2( 0, -29.9287 )
-scale = Vector2( 0.152303, 0.152303 )
-texture = ExtResource( 12 )
-
-[node name="ship2" type="Sprite" parent="Fleet"]
-position = Vector2( -18.972, 15.7605 )
-scale = Vector2( 0.152303, 0.152303 )
-texture = ExtResource( 12 )
-
-[node name="ship3" type="Sprite" parent="Fleet"]
-position = Vector2( 20.2925, 15.3204 )
-scale = Vector2( 0.152303, 0.152303 )
-texture = ExtResource( 12 )
-
-[node name="Area2D" type="Area2D" parent="Fleet"]
-
-[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="Fleet/Area2D"]
-polygon = PoolVector2Array( -39.6828, 26.2526, -9.49446, -50.0127, 11.5579, -50.4099, 36.1853, 11.9529, 38.5685, 36.183, -34.1218, 36.5802 )
-
-[node name="icon" type="Sprite" parent="Fleet"]
-visible = false
-position = Vector2( 0, -75.7554 )
-scale = Vector2( 0.0228264, 0.0228264 )
-texture = ExtResource( 10 )
-
-[node name="inRange" type="Sprite" parent="Fleet"]
-modulate = Color( 0, 0.486275, 1, 1 )
-position = Vector2( 0, 58.4714 )
-rotation = -3.14159
-scale = Vector2( 0.0228264, 0.0228264 )
-texture = ExtResource( 10 )
 [connection signal="pressed" from="Planet2" to="Planet2" method="_on_Planet_pressed"]
 [connection signal="pressed" from="CanvasLayer/EndYear" to="CanvasLayer/EndYear" method="_on_EndYear_pressed"]
 [connection signal="pressed" from="CanvasLayer/SetChem" to="CanvasLayer/Hub" method="_on_SetChem_pressed"]
@@ -533,11 +511,11 @@ texture = ExtResource( 10 )
 [connection signal="pressed" from="CanvasLayer/RefuelFleet" to="CanvasLayer/Hub" method="_on_RefuelFleet_pressed"]
 [connection signal="pressed" from="CanvasLayer/CreateFleet" to="CanvasLayer/Hub" method="_on_CreateFleet_pressed"]
 [connection signal="pressed" from="CanvasLayer/StockFleet" to="CanvasLayer/Hub" method="_on_StockFleet_pressed"]
+[connection signal="pressed" from="CanvasLayer/InvadeFleet" to="CanvasLayer/Hub" method="_on_InvadeFleet_pressed"]
 [connection signal="pressed" from="CanvasLayer/LaunchAttack" to="CanvasLayer/Hub" method="_on_LaunchAttack_pressed"]
 [connection signal="value_changed" from="CanvasLayer/Adjustments/ChemSlider" to="CanvasLayer/Adjustments" method="_on_ChemSlider_value_changed"]
 [connection signal="value_changed" from="CanvasLayer/Adjustments/MetSlider" to="CanvasLayer/Adjustments" method="_on_MetSlider_value_changed"]
 [connection signal="value_changed" from="CanvasLayer/Adjustments/SupSlider" to="CanvasLayer/Adjustments" method="_on_SupSlider_value_changed"]
 [connection signal="value_changed" from="CanvasLayer/Adjustments/FigSlider" to="CanvasLayer/Adjustments" method="_on_FigSlider_value_changed"]
+[connection signal="pressed" from="CanvasLayer/Adjustments/ConfirmChange" to="CanvasLayer/Adjustments" method="_on_ConfirmChange_pressed"]
 [connection signal="timeout" from="Timer" to="." method="_on_Timer_timeout"]
-[connection signal="mouse_entered" from="Fleet/Area2D" to="Fleet" method="_on_Area2D_mouse_entered"]
-[connection signal="mouse_exited" from="Fleet/Area2D" to="Fleet" method="_on_Area2D_mouse_exited"]

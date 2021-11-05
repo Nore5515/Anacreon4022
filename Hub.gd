@@ -11,6 +11,8 @@ var world2Selecting = false
 var trading = false
 var attacking = false
 
+var fleetPlanet
+
 func setPlanet(Button):
 	
 	selectedWorld = Button
@@ -101,6 +103,7 @@ func _on_CreateFleet_pressed():
 	if selectedWorld != null && selectedWorld.fighters > 0:
 		var fleetType = load("res://Fleet.tscn")
 		var instance = fleetType.instance()
+		instance.assignTeam(get_node("/root/Global").playerTeam, get_node("/root/Global").playerColor)
 		get_parent().get_parent().call_deferred("add_child", instance)
 		instance.position.x = selectedWorld.rect_position.x
 		instance.position.y = selectedWorld.rect_position.y
@@ -117,3 +120,14 @@ func _on_StockFleet_pressed():
 				child.fighters += selectedWorld.fighters
 				selectedWorld.fighters = 0
 				selectedWorld.updateDetails()
+
+
+func _on_InvadeFleet_pressed():
+	print ("Invade!")
+	for child in get_tree().get_nodes_in_group("fleet"):
+		print ("children?")
+		if child.selected:
+			print ("planet?")
+			if fleetPlanet != null:
+				print ("here we go!")
+				fleetPlanet.setTeam(get_node("/root/Global").playerTeam, get_node("/root/Global").playerColor)
