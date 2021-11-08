@@ -305,17 +305,22 @@ func AIaction():
 		aiMemory.famineScars += 1
 		aiMemory.daysWithSup = 0
 		if supPer < 0.8:
-			changePerTo("sup", 0.8)
+			#changePerTo("sup", 0.8)
+			changePerBy("sup", 0.3)
 		elif supPer >= 0.8:
-			changePerTo("sup", 1.0)
+			#changePerTo("sup", 1.0)
+			changePerBy("sup", 0.3)
 		print ("New sup per: ", supPer)
 	elif supDanger != "":
 		if supPer < 0.7:
-			changePerTo("sup", supPer + 0.2)
+			#changePerTo("sup", supPer + 0.2)
+			changePerBy("sup", 0.2)
 		elif supPer >= 0.7 && supPer <= 0.9:
-			changePerTo("sup", supPer + 0.1)
+			#changePerTo("sup", supPer + 0.1)
+			changePerBy("sup", 0.1)
 		elif supPer >= 0.9:
-			changePerTo("sup", 1.0)
+			#changePerTo("sup", 1.0)
+			changePerBy("sup", 1.0)
 		aiMemory.daysWithSup = 0
 		#print ("Starvation danger! Raising sup%...")
 		#print ("New sup per: ", supPer)
@@ -326,60 +331,188 @@ func AIaction():
 			#print ("It's time to switch production!") 
 			if supPer > 0.2:
 				#print (supPer, "current sup per")
-				changePerTo("sup", supPer - 0.2)
+				#changePerTo("sup", supPer - 0.2)
+				changePerBy("sup", -0.2)          # CHANGED!		
 				#print (supPer, "post sup per")
 			else:
 				pass
 				#print ("not enough sup production!")
 			aiMemory.daysWithSup = 0
 
+"""
+currentPlanet.changePerBy("chem", 0.2)
+	currentPlanet.changePerBy("sup", -0.2)
+	currentPlanet.changePerBy("met", 0.5)
+	currentPlanet.changePerBy("met", 1.5)
+	currentPlanet.changePerBy("sup", -1.5)
+"""
+
+func changePerBy(perType, amountIncoming):
+	
+	var arrayOfPers = [chemPer, metPer, supPer, fightersPer]
+	var indexChangedPer = -1
+	if perType == "chem":
+		indexChangedPer = 0
+	elif perType == "met":
+		indexChangedPer = 1
+	elif perType == "sup":
+		indexChangedPer = 2
+	elif perType == "fig":
+		indexChangedPer = 3
+	else:
+		print ("ERR; changePerBy, perType does not match any known types")
+	
+	#print ("god")
+	
+	var amount = amountIncoming
+	# if trying to change over100/under0, change to reasonable
+	if arrayOfPers[indexChangedPer] + amount > 1.0:
+		print ("Too large! Reducing amount to add to 1.0")
+		amount = (1.0-(arrayOfPers[indexChangedPer]))
+	elif arrayOfPers[indexChangedPer] + amount < 0.0:
+		print ("Too small! Reducing amount to add to 0.0")
+		amount = -(arrayOfPers[indexChangedPer])
+	
+	
+	#currentPlanet.chemPer = $ChemSlider.value/100
+	var remainder = (chemPer + metPer + supPer + fightersPer + amount)-1.0
+	#print ("Remainder:" , remainder)
+	
+	### IDEA WHILE LOOP
+	arrayOfPers[indexChangedPer] += remainder
+	var initialRemainder = remainder
+	
+	
+	var negative = false
+	if initialRemainder < 0:
+		negative = true
+	else:
+		negative = false
+	
+	var allNegative = false
+	# Until remainder is distributed, keep looping
+	while (abs(remainder) > 0):
+		if shipLock:
+			for n in 3:
+				if n == indexChangedPer:
+					pass
+				else:
+					if (arrayOfPers[n] - initialRemainder * 0.5) <= 0:
+						remainder -= arrayOfPers[n]
+						arrayOfPers[n] = 0
+					else:
+						arrayOfPers[n] -= initialRemainder * 0.5
+						remainder -= initialRemainder * 0.5
+				if negative && remainder > 0:
+					print ("DONE", arrayOfPers)
+					remainder = 0
+				if !negative && remainder < 0:
+					print ("DONE", arrayOfPers)
+					remainder = 0
+		# All
+		else:
+			allNegative = true
+			print ("---New loop---")
+			for n in arrayOfPers.size():
+				if abs(remainder) <= 0.01:
+					remainder = 0
+				else:
+					if n == indexChangedPer:
+						pass
+					else:
+						print (arrayOfPers)
+						print ("Loop Stats: ", remainder, ",", initialRemainder, ",", initialRemainder * 0.34)
+						if (arrayOfPers[n] - initialRemainder * 0.34) <= 0:
+							print ("Would go negative!")
+							remainder -= arrayOfPers[n]
+							arrayOfPers[n] = 0
+						else:
+							arrayOfPers[n] -= initialRemainder * 0.34  ### FIX THIS LATER
+							remainder -= initialRemainder * 0.34
+							allNegative = false
+				if negative && remainder > 0:
+					print ("DONE", arrayOfPers)
+					remainder = 0
+				if !negative && remainder < 0:
+					print ("DONE", arrayOfPers)
+					remainder = 0
+					
+			if allNegative:
+				remainder = 0
+				print ("GAAAA")
+	
+	#print ("SHOULD BE 0: ", remainder)
+	"""
+	# Just first 3
+	if shipLock:
+		for n in 3:
+			if n == indexChangedPer:
+				arrayOfPers[n] += remainder
+			else:
+				arrayOfPers[n] -= remainder * 0.5
+		
+	# All
+	else:
+		for n in arrayOfPers.size():
+			if n == indexChangedPer:
+				arrayOfPers[n] += remainder
+			else:
+				arrayOfPers[n] -= remainder * 0.33  ### FIX THIS LATER
+	"""
+	
+	var total = 0
+	for n in arrayOfPers.size():
+		total += arrayOfPers[n]
+
+	var totalWithoutChanged = 0
+	for n in arrayOfPers.size():
+		if n == indexChangedPer:
+			# Skip the index that we're currently changing
+			pass
+		else:
+			totalWithoutChanged += arrayOfPers[n]
+
+
+	if (total) > 1.0 || total < 0.0:
+		print ("Total Per does not add up correctly. This is a minor issue if it happens once...")
+		#arrayOfPers[indexChangedPer] = 1.0 - (totalWithoutChanged)
+	
+	print ("End Results:\n\t", arrayOfPers, "\n\tTotal: ", total)
+
+	if perType == "chem":
+		indexChangedPer = 0
+	elif perType == "met":
+		indexChangedPer = 1
+	elif perType == "sup":
+		indexChangedPer = 2
+	elif perType == "fig":
+		indexChangedPer = 3
+		
+	chemPer = arrayOfPers[0]
+	metPer = arrayOfPers[1]
+	supPer = arrayOfPers[2]
+	fightersPer = arrayOfPers[3]
+	
+	# UPDATE PERS WITH ARRAY OF PERS
+	updateDetails()
 
 func changePerTo(perType, amount):
-	var numOfCoreOptions = 3
-	var numOfSecondaryOptions = 1
-	
-	if perType == "sup" || perType == "met" || perType == "chem":
-		numOfCoreOptions -= 1
-	elif perType == "fig":
-		numOfSecondaryOptions -= 1
-	
-	var totalOptions = (numOfCoreOptions * 3) + numOfSecondaryOptions
-	
-	var remainingPer = 1 - amount
-	#print ("A", remainingPer)
-	if (remainingPer <= 0):
-		remainingPer = 0
-	else:
-		remainingPer = remainingPer/totalOptions
-	#print ("B", remainingPer)
-	
-	if perType == "sup":
-		supPer = amount
-	if perType == "met":
-		metPer = amount
+	var arrayOfPers = [chemPer, metPer, supPer, fightersPer]
+	var indexChangedPer = -1
 	if perType == "chem":
-		chemPer = amount
-	if perType == "fig":
-		fightersPer = amount
+		indexChangedPer = 0
+	elif perType == "met":
+		indexChangedPer = 1
+	elif perType == "sup":
+		indexChangedPer = 2
+	elif perType == "fig":
+		indexChangedPer = 3
+	else:
+		print ("ERR; changePerBy, perType does not match any known types")
 	
-	if perType != "sup":
-		#print ("NOT SUP")
-		supPer = remainingPer * 2
-	if perType != "met":
-		#print ("NOT MET")
-		metPer = remainingPer * 2
-	if perType != "chem":
-		#print ("NOT CHEM")
-		chemPer = remainingPer * 2
-	if perType != "fig":
-		#print ("NOT FIG")
-		fightersPer = remainingPer
-	#print ("C", chemPer, ",", metPer, ",", supPer, ",", fightersPer)
-	
-	#if (supPer+metPer+chemPer+fightersPer) != 1:
-		#print ("ERR PER TOTAL WRONG", (supPer+metPer+chemPer+fightersPer))
-	
-	#get_parent().get_node("CanvasLayer/Adjustments").updateDetails()
+	var changeBy = amount-arrayOfPers[indexChangedPer]
+	changePerBy(perType, changeBy)
+
 
 func getNearestUnalignedPlanet():
 	var nearest 

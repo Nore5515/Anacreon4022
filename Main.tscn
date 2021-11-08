@@ -1,4 +1,4 @@
-[gd_scene load_steps=15 format=2]
+[gd_scene load_steps=16 format=2]
 
 [ext_resource path="res://icon.png" type="Texture" id=1]
 [ext_resource path="res://Planet.gd" type="Script" id=2]
@@ -13,6 +13,7 @@
 [ext_resource path="res://TeamButton.gd" type="Script" id=11]
 [ext_resource path="res://Imports/ship.png" type="Texture" id=12]
 [ext_resource path="res://TradeArtManager.gd" type="Script" id=13]
+[ext_resource path="res://Imports/lock_and_key.svg" type="Texture" id=14]
 [ext_resource path="res://Adjustments.gd" type="Script" id=15]
 
 [node name="Main" type="Node2D"]
@@ -402,6 +403,7 @@ script = ExtResource( 15 )
 __meta__ = {
 "_edit_use_anchors_": false
 }
+displayOnly = true
 
 [node name="ChemSlider" type="HSlider" parent="CanvasLayer/Adjustments"]
 margin_right = 100.0
@@ -458,6 +460,13 @@ text = "Lock Ships %"
 __meta__ = {
 "_edit_use_anchors_": false
 }
+
+[node name="lock" type="Sprite" parent="CanvasLayer/Adjustments/LockShips"]
+position = Vector2( 121.272, 11.3203 )
+scale = Vector2( 0.153887, 0.152444 )
+texture = ExtResource( 14 )
+region_enabled = true
+region_rect = Rect2( 110, 5, 108, 143 )
 
 [node name="FigSlider" type="HSlider" parent="CanvasLayer/Adjustments"]
 margin_top = 75.8176
@@ -525,7 +534,7 @@ texture = ExtResource( 12 )
 [connection signal="value_changed" from="CanvasLayer/Adjustments/ChemSlider" to="CanvasLayer/Adjustments" method="_on_ChemSlider_value_changed"]
 [connection signal="value_changed" from="CanvasLayer/Adjustments/MetSlider" to="CanvasLayer/Adjustments" method="_on_MetSlider_value_changed"]
 [connection signal="value_changed" from="CanvasLayer/Adjustments/SupSlider" to="CanvasLayer/Adjustments" method="_on_SupSlider_value_changed"]
-[connection signal="pressed" from="CanvasLayer/Adjustments/LockShips" to="CanvasLayer/Adjustments" method="_on_ConfirmChange_pressed"]
+[connection signal="pressed" from="CanvasLayer/Adjustments/LockShips" to="CanvasLayer/Adjustments" method="_on_LockShips_pressed"]
 [connection signal="value_changed" from="CanvasLayer/Adjustments/FigSlider" to="CanvasLayer/Adjustments" method="_on_FigSlider_value_changed"]
 [connection signal="pressed" from="CanvasLayer/Adjustments/ConfirmChange" to="CanvasLayer/Adjustments" method="_on_ConfirmChange_pressed"]
 [connection signal="timeout" from="Timer" to="." method="_on_Timer_timeout"]

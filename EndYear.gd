@@ -14,6 +14,7 @@ func _on_EndYear_pressed():
 	get_parent().get_node("Label").text = "Year: " + String(year)
 	get_parent().get_parent().get_node("TradeArtManager").clearAllShips()
 	get_parent().get_parent().get_node("TradeArtManager").addShips()
+	get_parent().get_node("Adjustments").updateDetails()
 	
 	if won:
 		get_parent().get_node("YouWon").visible = true
