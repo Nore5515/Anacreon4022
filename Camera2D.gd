@@ -4,6 +4,8 @@ var movement = Vector2(0,0)
 export (float) var speed = 10.0
 var zoomScale = 1.0
 
+var rightClicking = false
+
 func _input(event):
 	movement = Vector2(0,0)
 	if Input.is_action_pressed("ui_up"):
@@ -23,6 +25,15 @@ func _input(event):
 		zoomScale -= 0.1
 	if Input.is_action_pressed("scrollDown"):
 		zoomScale += 0.1
+	
+	if Input.is_action_pressed("rightClick"):
+		rightClicking = true
+	if Input.is_action_just_released("rightClick"):
+		rightClicking = false
+	
+	if rightClicking:
+		if event is InputEventMouseMotion:
+			position -= event.relative
 
 func _process(delta):
 	self.translate(movement * speed)

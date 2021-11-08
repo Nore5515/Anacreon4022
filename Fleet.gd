@@ -6,6 +6,7 @@ var selected = false
 
 var destination = Vector2()
 var destIcon
+var destPlanet
 
 var fuel = 100.0
 var fighters = 0
@@ -45,6 +46,7 @@ func updateStatus():
 	get_parent().get_node("CanvasLayer/FleetStatus").text = thing
 
 func _process(delta):
+	$count.text = String(fighters)
 	var movement = destination - position
 	movement = movement / movement.length()
 	position += movement
@@ -53,10 +55,10 @@ func _process(delta):
 	fuel -= 0.5 * delta
 	
 	if team != get_node("/root/Global").playerTeam:
-		print ("AI ACTION!", position)
+		#print ("AI ACTION!", position)
 		aiAct()
 	
-	if selected:
+	if selected && team == get_node("/root/Global").playerTeam:
 		updateStatus()
 	
 		if (getNearestPlanet().get_global_rect().position - (self.position + Vector2(50, 25))).length() <= 80:
@@ -74,19 +76,37 @@ func _process(delta):
 
 
 func aiAct():
-	if destIcon == null:
+	# You have arrived
+	if (destination-position).length() < 1:
+		print ("Capture!")
+		getNearestUnalignedPlanet().setTeam(get_node("/root/Global").aiTeam, get_node("/root/Global").aiColor)
+		get_parent().call_deferred("queue_free", destIcon)
+		destination = null
+		destPlanet = null
+	
+	# Your destination has changed sides
+	if destPlanet != null:
+		if destPlanet.team != "":
+			print ("Lost!")
+			get_parent().call_deferred("queue_free", destIcon)
+			destination = null
+			destPlanet = null
+	
+	if destIcon == null || destination == null:
 		print ("Creating new dest!")
 		if getNearestUnalignedPlanet() == null:
 			pass
-		else:
+		else: 
 			var instance = Sprite.new()
 			instance.modulate = modulate
 			instance.texture = load("res://Imports/icon.png")
 			instance.scale = Vector2(0.023, 0.023)
 			get_parent().call_deferred("add_child", instance)
 			instance.position = getNearestUnalignedPlanet().rect_position
+			destPlanet = getNearestUnalignedPlanet()
 			destIcon = instance
 			destination = instance.position
+	
 
 func getNearestPlanet():
 	var nearest 
@@ -116,7 +136,7 @@ func getNearestUnalignedPlanet():
 	
 
 func _input(event):
-	if event.is_action_pressed("mouseClick"):
+	if event.is_action_pressed("mouseClick") && team == get_node("/root/Global").playerTeam:
 		if mouseOver:
 			if team == get_node("/root/Global").playerTeam:
 				select()
@@ -149,3 +169,12 @@ func _on_Area2D_mouse_entered():
 
 func _on_Area2D_mouse_exited():
 	mouseOver = false
+
+
+func _on_EngageRange_area_entered(area):
+	if area.is_in_group("fleetBox") && area != $Area2D && area.get_parent().team != team:
+		print ("OTHER FLEET!")
+		if area.get_parent().fighters >= fighters:
+			print ("Bye")
+			area.get_parent().fighters -= fighters
+			queue_free()

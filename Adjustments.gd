@@ -14,7 +14,7 @@ func setPlanet(planet):
 	$MetSlider.value = planet.metPer * 100
 	$SupSlider.value = planet.supPer * 100
 	$FigSlider.value = planet.fightersPer * 100
-	print ("values are:", planet.chemPer, ",", planet.metPer, ",", planet.supPer, ",", planet.fightersPer)
+	#print ("values are:", planet.chemPer, ",", planet.metPer, ",", planet.supPer, ",", planet.fightersPer)
 	currentPlanet = planet
 	updateDetails()
 

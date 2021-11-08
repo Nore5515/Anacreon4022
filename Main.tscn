@@ -450,10 +450,19 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
+[node name="LockShips" type="Button" parent="CanvasLayer/Adjustments"]
+margin_top = 53.0923
+margin_right = 112.0
+margin_bottom = 73.0923
+text = "Lock Ships %"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
 [node name="FigSlider" type="HSlider" parent="CanvasLayer/Adjustments"]
-margin_top = 53.1144
+margin_top = 75.8176
 margin_right = 100.0
-margin_bottom = 69.1144
+margin_bottom = 91.8176
 __meta__ = {
 "_edit_use_anchors_": false
 }
@@ -468,9 +477,9 @@ __meta__ = {
 }
 
 [node name="ConfirmChange" type="Button" parent="CanvasLayer/Adjustments"]
-margin_top = 75.8176
-margin_right = 12.0
-margin_bottom = 95.8176
+margin_top = 98.5208
+margin_right = 112.0
+margin_bottom = 118.521
 text = "Confirm Change"
 __meta__ = {
 "_edit_use_anchors_": false
@@ -516,6 +525,7 @@ texture = ExtResource( 12 )
 [connection signal="value_changed" from="CanvasLayer/Adjustments/ChemSlider" to="CanvasLayer/Adjustments" method="_on_ChemSlider_value_changed"]
 [connection signal="value_changed" from="CanvasLayer/Adjustments/MetSlider" to="CanvasLayer/Adjustments" method="_on_MetSlider_value_changed"]
 [connection signal="value_changed" from="CanvasLayer/Adjustments/SupSlider" to="CanvasLayer/Adjustments" method="_on_SupSlider_value_changed"]
+[connection signal="pressed" from="CanvasLayer/Adjustments/LockShips" to="CanvasLayer/Adjustments" method="_on_ConfirmChange_pressed"]
 [connection signal="value_changed" from="CanvasLayer/Adjustments/FigSlider" to="CanvasLayer/Adjustments" method="_on_FigSlider_value_changed"]
 [connection signal="pressed" from="CanvasLayer/Adjustments/ConfirmChange" to="CanvasLayer/Adjustments" method="_on_ConfirmChange_pressed"]
 [connection signal="timeout" from="Timer" to="." method="_on_Timer_timeout"]

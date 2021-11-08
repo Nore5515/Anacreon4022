@@ -17,6 +17,10 @@ var chemicals = 0
 var metals = 0
 var supplies = 0
 
+var chemLaborMod = 1
+var metLaborMod = 2
+var supLaborMod = 4
+
 var chemicalGrowth = 100.0
 var metalsGrowth = 100.0
 var suppliesGrowth = 100.0
@@ -48,6 +52,8 @@ export (float) var population = 4.0 #billions
 var chemPer = 0.25
 var metPer = 0.50
 var supPer = 0.25
+
+var shipLock = false
 
 var fighters = 0
 var fightersPer = 0.0
@@ -172,9 +178,9 @@ func endYear():
 	elif efficency > 1.0:
 		efficency = 1.0
 	
-	chemicalGrowth = chemPer * industry * efficency
-	metalsGrowth = metPer * industry * efficency
-	suppliesGrowth = supPer * industry * efficency
+	chemicalGrowth = chemPer * industry * efficency * chemLaborMod
+	metalsGrowth = metPer * industry * efficency * metLaborMod
+	suppliesGrowth = supPer * industry * efficency * supLaborMod
 	chemDraw = population * techMod * 2.5
 	chemDraw = stepify(chemDraw, 0.01)
 	metDraw = population * 2.5 * techMod
@@ -279,7 +285,7 @@ var aiMemory = {
 }
 
 func AIaction():
-	print ("================\nAi Acting!")
+	#print ("================\nAi Acting!")
 	
 	aiMemory.fleetDelay -= fighters
 	if aiMemory.fleetDelay <= 0:
@@ -295,7 +301,7 @@ func AIaction():
 		updateDetails()
 	
 	if disasters.has("Famine"):
-		print ("FAMINE!!!!")
+		#print ("FAMINE!!!!")
 		aiMemory.famineScars += 1
 		aiMemory.daysWithSup = 0
 		if supPer < 0.8:
@@ -311,19 +317,20 @@ func AIaction():
 		elif supPer >= 0.9:
 			changePerTo("sup", 1.0)
 		aiMemory.daysWithSup = 0
-		print ("Starvation danger! Raising sup%...")
-		print ("New sup per: ", supPer)
+		#print ("Starvation danger! Raising sup%...")
+		#print ("New sup per: ", supPer)
 	else:
-		print ("Food supply steady...")
+		#print ("Food supply steady...")
 		aiMemory.daysWithSup += 1
 		if (aiMemory.famineScars*2) + 3 < aiMemory.daysWithSup:
-			print ("It's time to switch production!") 
+			#print ("It's time to switch production!") 
 			if supPer > 0.2:
-				print (supPer, "current sup per")
+				#print (supPer, "current sup per")
 				changePerTo("sup", supPer - 0.2)
-				print (supPer, "post sup per")
+				#print (supPer, "post sup per")
 			else:
-				print ("not enough sup production!")
+				pass
+				#print ("not enough sup production!")
 			aiMemory.daysWithSup = 0
 
 
@@ -336,15 +343,15 @@ func changePerTo(perType, amount):
 	elif perType == "fig":
 		numOfSecondaryOptions -= 1
 	
-	var totalOptions = (numOfCoreOptions * 2) + numOfSecondaryOptions
+	var totalOptions = (numOfCoreOptions * 3) + numOfSecondaryOptions
 	
 	var remainingPer = 1 - amount
-	print ("A", remainingPer)
+	#print ("A", remainingPer)
 	if (remainingPer <= 0):
 		remainingPer = 0
 	else:
 		remainingPer = remainingPer/totalOptions
-	print ("B", remainingPer)
+	#print ("B", remainingPer)
 	
 	if perType == "sup":
 		supPer = amount
@@ -367,10 +374,10 @@ func changePerTo(perType, amount):
 	if perType != "fig":
 		#print ("NOT FIG")
 		fightersPer = remainingPer
-	print ("C", chemPer, ",", metPer, ",", supPer, ",", fightersPer)
+	#print ("C", chemPer, ",", metPer, ",", supPer, ",", fightersPer)
 	
-	if (supPer+metPer+chemPer+fightersPer) != 1:
-		print ("ERR PER TOTAL WRONG", (supPer+metPer+chemPer+fightersPer))
+	#if (supPer+metPer+chemPer+fightersPer) != 1:
+		#print ("ERR PER TOTAL WRONG", (supPer+metPer+chemPer+fightersPer))
 	
 	#get_parent().get_node("CanvasLayer/Adjustments").updateDetails()
 
