@@ -361,115 +361,58 @@ func changePerBy(perType, amountIncoming):
 		indexChangedPer = 3
 	else:
 		print ("ERR; changePerBy, perType does not match any known types")
+#	var indexLabels = ["chem", "met", "sup", "fig"]
 	
-	var indexLabels = ["chem", "met", "sup", "fig"]
-	
-	#print ("god")
-	
+	var skipIndexes = [indexChangedPer]
+	if shipLock:
+		skipIndexes.append(3)
+
 	var amount = amountIncoming
-	# if trying to change over100/under0, change to reasonable
-	if arrayOfPers[indexChangedPer] + amount > 1.0:
-		print ("Too large! Reducing amount to add to 1.0")
-		amount = (1.0-(arrayOfPers[indexChangedPer]))
-	elif arrayOfPers[indexChangedPer] + amount < 0.0:
-		print ("Too small! Reducing amount to add to 0.0")
-		amount = -(arrayOfPers[indexChangedPer])
-	
-	
-	#currentPlanet.chemPer = $ChemSlider.value/100
 	var remainder = (chemPer + metPer + supPer + fightersPer + amount)-1.0
 	print ("Remainder:" , remainder)
-	
-	### IDEA WHILE LOOP
+
 	arrayOfPers[indexChangedPer] += remainder
 	var initialRemainder = remainder
-	
-	
-	var negative = false
-	if initialRemainder < 0:
-		negative = true
-	else:
-		negative = false
-	
-	var allNegative = false
-	var divideBy = 1.0/(arrayOfPers.size()-1.0)
+
+	var divideBy = 1.0/(arrayOfPers.size()-skipIndexes.size())
 	print ("DIVIDE BY\t", divideBy)
 	# Until remainder is distributed, keep looping
 	var zeroedElements = 0
 	while (abs(remainder) > 0):
 		initialRemainder = remainder
-		if shipLock:
-			for n in 3:
+			
+		if (zeroedElements + 1) == arrayOfPers.size():
+			print ("Cannot divide by zero!")
+			for n in arrayOfPers.size():
 				if n == indexChangedPer:
 					pass
 				else:
-					if (arrayOfPers[n] - initialRemainder * 0.5) <= 0:
-						remainder -= arrayOfPers[n]
-						arrayOfPers[n] = 0
-					else:
-						arrayOfPers[n] -= initialRemainder * 0.5
-						remainder -= initialRemainder * 0.5
-				if negative && remainder > 0:
-					#print ("DONE", arrayOfPers)
-					remainder = 0
-				if !negative && remainder < 0:
-					#print ("DONE", arrayOfPers)
-					remainder = 0
-		# All
+					arrayOfPers[n] = 0
+			remainder = 0
 		else:
-			allNegative = true
-			#print ("---New loop---\nZeroed elements: ", zeroedElements)
-			var i = 0
-			
-			
-			if (zeroedElements + 1) == arrayOfPers.size():
-				pass
-				#print ("Cannot divide by zero!")
-			else:
-				divideBy = 1.0/(arrayOfPers.size()-(1.0 + zeroedElements))
-				zeroedElements = 0
-				for n in arrayOfPers.size():
-					# Chem Met Sup Fig is the order of pers in the array.
-					#print ("Iteration ", i)
-					#print ("Loop Stats: \n\tRemainder: ", remainder, "\n\tInitial remainder: ", initialRemainder, "\n\tReduction value: ", initialRemainder * divideBy, "\n\tPer stats: ", arrayOfPers)
-					i += 1
-					if abs(remainder) <= 0.00001:
-						# Could this not be stepify (remainder, 0.01)?
-						#print ("Absolute value of remainder is less than 0.01, rounding to 0.")
-						remainder = 0
-					else:
-						#print ("Absolute value of remainder is above 0.01, continuing.")
-						if n == indexChangedPer:
-							pass#print ("This is the value that has been changed, and we are ignoring.")
-						else:
-							if (arrayOfPers[n] - initialRemainder * divideBy) <= 0 && remainder > arrayOfPers[n]:
-								#print ("The ", indexLabels[n], " per would go negative if reduced by the reduction amount.")
-								#print ("Remainder was instead reduced by the per's current value, and the per was set to 0.")
-								remainder -= arrayOfPers[n]
-								arrayOfPers[n] = 0
-								zeroedElements += 1
-							else:
-								#print ("The ", indexLabels[n], " per and the remainder were reduced by the reduction amount.")
-								arrayOfPers[n] -= initialRemainder * divideBy
-								remainder -= initialRemainder * divideBy
-								# Remove?
-								allNegative = false
-							#print ("New ", indexLabels[n], " per is now: ", arrayOfPers[n])
-							#print ("New remainder is now: ", remainder)
-					
-					## Not necessary?
-					if negative && remainder > 0:
-						#print ("DONE", arrayOfPers)
-						remainder = 0
-					if !negative && remainder < 0:
-						#print ("DONE", arrayOfPers)
-						remainder = 0
+			divideBy = 1.0/(arrayOfPers.size()-(skipIndexes.size() + zeroedElements))
+			zeroedElements = 0
+			var skipped = false
+			for n in arrayOfPers.size():
+				skipped = false
+				# Chem Met Sup Fig is the order of pers in the array.
 				
-			# This shouldn't exist...
-			if allNegative:
-				remainder = 0
-				#print ("GAAAA")
-	
+				if abs(remainder) <= 0.00001:
+					# Could this not be stepify (remainder, 0.01)?
+					remainder = 0
+				else:
+					for skip in skipIndexes:
+						if n == skip:
+							skipped = true
+					if !skipped:
+						if (arrayOfPers[n] - initialRemainder * divideBy) <= 0 && remainder > arrayOfPers[n]:
+							remainder -= arrayOfPers[n]
+							arrayOfPers[n] = 0
+							zeroedElements += 1
+						else:
+							arrayOfPers[n] -= initialRemainder * divideBy
+							remainder -= initialRemainder * divideBy
+					
 	var total = 0
 	for n in arrayOfPers.size():
 		total += arrayOfPers[n]
