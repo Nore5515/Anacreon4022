@@ -75,6 +75,10 @@ func _process(delta):
 			get_parent().get_node("CanvasLayer/InvadeFleet").disabled = true
 
 
+func getTradeLines():
+	pass
+
+
 func aiAct():
 	# You have arrived
 	if (destination-position).length() < 1:

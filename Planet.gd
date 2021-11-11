@@ -29,14 +29,15 @@ var chemDraw = 0.0
 var metDraw = 0.0
 var supDraw = 0.0
 
+### Trading
 var chemTrades = {}
 var netChemExchange = 0
-
 var metTrades = {}
 var netMetExchange = 0
-
 var supTrades = {}
 var netSupExchange = 0
+
+var planetsTrading = []
 
 var chemDanger = ""
 var metDanger = ""
@@ -87,22 +88,25 @@ func init():
 		worldClass = "Independent World"
 	#updateDetails()
 
-func addTrades(planetName, type, amount):
+func addTrades(planet, type, amount):
 	if (type == "chem"):
-		if chemTrades.keys().has(planetName):
-			chemTrades[planetName] += amount
+		if chemTrades.keys().has(planet.worldName):
+			chemTrades[planet.worldName] += amount
 		else:		
-			chemTrades[planetName] = amount
+			chemTrades[planet.worldName] = amount
+			planetsTrading.append(planet)
 	elif (type == "met"):
-		if metTrades.keys().has(planetName):
-			metTrades[planetName] += amount
+		if metTrades.keys().has(planet.worldName):
+			metTrades[planet.worldName] += amount
 		else:
-			metTrades[planetName] = amount
+			metTrades[planet.worldName] = amount
+			planetsTrading.append(planet)
 	elif (type == "sup"):
-		if supTrades.keys().has(planetName):
-			supTrades[planetName] += amount
+		if supTrades.keys().has(planet.worldName):
+			supTrades[planet.worldName] += amount
 		else:
-			supTrades[planetName] = amount
+			supTrades[planet.worldName] = amount
+			planetsTrading.append(planet)
 	
 	netChemExchange = 0
 	for key in chemTrades.keys():
@@ -117,13 +121,13 @@ func addTrades(planetName, type, amount):
 		netSupExchange += supTrades[key]
 
 
-func removeTrades(planetName):
-	if chemTrades.keys().has(planetName):
-		chemTrades.erase(planetName)
-	if metTrades.keys().has(planetName):
-		metTrades.erase(planetName)
-	if supTrades.keys().has(planetName):
-		supTrades.erase(planetName)
+func removeTrades(planet):
+	if chemTrades.keys().has(planet.worldName):
+		chemTrades.erase(planet.worldName)
+	if metTrades.keys().has(planet.worldName):
+		metTrades.erase(planet.worldName)
+	if supTrades.keys().has(planet.worldName):
+		supTrades.erase(planet.worldName)
 
 func desgPlanet(newDesg):
 	if newDesg == worldDesg:

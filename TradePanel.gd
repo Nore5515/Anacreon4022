@@ -35,20 +35,20 @@ func _on_Done_pressed():
 	var importer
 	# Outgoing chems
 	if chemTrade > 0:
-		world1.addTrades(world2.worldName, "chem", -chemTrade)
-		world2.addTrades(world1.worldName, "chem", chemTrade)
+		world1.addTrades(world2, "chem", -chemTrade)
+		world2.addTrades(world1, "chem", chemTrade)
 		line = true
 		exporter = world1
 		importer = world2
 	elif chemTrade < 0:
-		world1.addTrades(world2.worldName, "chem", chemTrade)
-		world2.addTrades(world1.worldName, "chem", -chemTrade)
+		world1.addTrades(world2, "chem", chemTrade)
+		world2.addTrades(world1, "chem", -chemTrade)
 		line = true
 		exporter = world2
 		importer = world1
 	else:
-		world1.removeTrades(world2.worldName)
-		world2.removeTrades(world1.worldName)
+		world1.removeTrades(world2)
+		world2.removeTrades(world1)
 	rect_position = Vector2(-1000,125)
 
 	if line:

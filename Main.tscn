@@ -1,4 +1,4 @@
-[gd_scene load_steps=16 format=2]
+[gd_scene load_steps=17 format=2]
 
 [ext_resource path="res://icon.png" type="Texture" id=1]
 [ext_resource path="res://Planet.gd" type="Script" id=2]
@@ -15,6 +15,7 @@
 [ext_resource path="res://TradeArtManager.gd" type="Script" id=13]
 [ext_resource path="res://Imports/lock_and_key.svg" type="Texture" id=14]
 [ext_resource path="res://Adjustments.gd" type="Script" id=15]
+[ext_resource path="res://TradeHandler.gd" type="Script" id=16]
 
 [node name="Main" type="Node2D"]
 script = ExtResource( 6 )
@@ -24,6 +25,13 @@ __meta__ = {
 
 [node name="TradeArtManager" type="Node2D" parent="."]
 script = ExtResource( 13 )
+
+[node name="TradeHandler" type="Node2D" parent="."]
+script = ExtResource( 16 )
+
+[node name="Timer" type="Timer" parent="TradeHandler"]
+wait_time = 5.0
+autostart = true
 
 [node name="Line2D" type="Line2D" parent="."]
 default_color = Color( 0.4, 0.501961, 1, 0.415686 )
@@ -513,6 +521,7 @@ __meta__ = {
 position = Vector2( 274.205, 387.79 )
 scale = Vector2( 0.434346, 0.434346 )
 texture = ExtResource( 12 )
+[connection signal="timeout" from="TradeHandler/Timer" to="TradeHandler" method="_on_Timer_timeout"]
 [connection signal="pressed" from="Planet2" to="Planet2" method="_on_Planet_pressed"]
 [connection signal="pressed" from="CanvasLayer/EndYear" to="CanvasLayer/EndYear" method="_on_EndYear_pressed"]
 [connection signal="pressed" from="CanvasLayer/SetChem" to="CanvasLayer/Hub" method="_on_SetChem_pressed"]
