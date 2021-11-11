@@ -362,6 +362,8 @@ func changePerBy(perType, amountIncoming):
 	else:
 		print ("ERR; changePerBy, perType does not match any known types")
 	
+	var indexLabels = ["chem", "met", "sup", "fig"]
+	
 	#print ("god")
 	
 	var amount = amountIncoming
@@ -376,7 +378,7 @@ func changePerBy(perType, amountIncoming):
 	
 	#currentPlanet.chemPer = $ChemSlider.value/100
 	var remainder = (chemPer + metPer + supPer + fightersPer + amount)-1.0
-	#print ("Remainder:" , remainder)
+	print ("Remainder:" , remainder)
 	
 	### IDEA WHILE LOOP
 	arrayOfPers[indexChangedPer] += remainder
@@ -390,8 +392,12 @@ func changePerBy(perType, amountIncoming):
 		negative = false
 	
 	var allNegative = false
+	var divideBy = 1.0/(arrayOfPers.size()-1.0)
+	print ("DIVIDE BY\t", divideBy)
 	# Until remainder is distributed, keep looping
+	var zeroedElements = 0
 	while (abs(remainder) > 0):
+		initialRemainder = remainder
 		if shipLock:
 			for n in 3:
 				if n == indexChangedPer:
@@ -404,61 +410,65 @@ func changePerBy(perType, amountIncoming):
 						arrayOfPers[n] -= initialRemainder * 0.5
 						remainder -= initialRemainder * 0.5
 				if negative && remainder > 0:
-					print ("DONE", arrayOfPers)
+					#print ("DONE", arrayOfPers)
 					remainder = 0
 				if !negative && remainder < 0:
-					print ("DONE", arrayOfPers)
+					#print ("DONE", arrayOfPers)
 					remainder = 0
 		# All
 		else:
 			allNegative = true
-			print ("---New loop---")
-			for n in arrayOfPers.size():
-				if abs(remainder) <= 0.01:
-					remainder = 0
-				else:
-					if n == indexChangedPer:
-						pass
+			#print ("---New loop---\nZeroed elements: ", zeroedElements)
+			var i = 0
+			
+			
+			if (zeroedElements + 1) == arrayOfPers.size():
+				pass
+				#print ("Cannot divide by zero!")
+			else:
+				divideBy = 1.0/(arrayOfPers.size()-(1.0 + zeroedElements))
+				zeroedElements = 0
+				for n in arrayOfPers.size():
+					# Chem Met Sup Fig is the order of pers in the array.
+					#print ("Iteration ", i)
+					#print ("Loop Stats: \n\tRemainder: ", remainder, "\n\tInitial remainder: ", initialRemainder, "\n\tReduction value: ", initialRemainder * divideBy, "\n\tPer stats: ", arrayOfPers)
+					i += 1
+					if abs(remainder) <= 0.00001:
+						# Could this not be stepify (remainder, 0.01)?
+						#print ("Absolute value of remainder is less than 0.01, rounding to 0.")
+						remainder = 0
 					else:
-						print (arrayOfPers)
-						print ("Loop Stats: ", remainder, ",", initialRemainder, ",", initialRemainder * 0.34)
-						if (arrayOfPers[n] - initialRemainder * 0.34) <= 0:
-							print ("Would go negative!")
-							remainder -= arrayOfPers[n]
-							arrayOfPers[n] = 0
+						#print ("Absolute value of remainder is above 0.01, continuing.")
+						if n == indexChangedPer:
+							pass#print ("This is the value that has been changed, and we are ignoring.")
 						else:
-							arrayOfPers[n] -= initialRemainder * 0.34  ### FIX THIS LATER
-							remainder -= initialRemainder * 0.34
-							allNegative = false
-				if negative && remainder > 0:
-					print ("DONE", arrayOfPers)
-					remainder = 0
-				if !negative && remainder < 0:
-					print ("DONE", arrayOfPers)
-					remainder = 0
+							if (arrayOfPers[n] - initialRemainder * divideBy) <= 0 && remainder > arrayOfPers[n]:
+								#print ("The ", indexLabels[n], " per would go negative if reduced by the reduction amount.")
+								#print ("Remainder was instead reduced by the per's current value, and the per was set to 0.")
+								remainder -= arrayOfPers[n]
+								arrayOfPers[n] = 0
+								zeroedElements += 1
+							else:
+								#print ("The ", indexLabels[n], " per and the remainder were reduced by the reduction amount.")
+								arrayOfPers[n] -= initialRemainder * divideBy
+								remainder -= initialRemainder * divideBy
+								# Remove?
+								allNegative = false
+							#print ("New ", indexLabels[n], " per is now: ", arrayOfPers[n])
+							#print ("New remainder is now: ", remainder)
 					
+					## Not necessary?
+					if negative && remainder > 0:
+						#print ("DONE", arrayOfPers)
+						remainder = 0
+					if !negative && remainder < 0:
+						#print ("DONE", arrayOfPers)
+						remainder = 0
+				
+			# This shouldn't exist...
 			if allNegative:
 				remainder = 0
-				print ("GAAAA")
-	
-	#print ("SHOULD BE 0: ", remainder)
-	"""
-	# Just first 3
-	if shipLock:
-		for n in 3:
-			if n == indexChangedPer:
-				arrayOfPers[n] += remainder
-			else:
-				arrayOfPers[n] -= remainder * 0.5
-		
-	# All
-	else:
-		for n in arrayOfPers.size():
-			if n == indexChangedPer:
-				arrayOfPers[n] += remainder
-			else:
-				arrayOfPers[n] -= remainder * 0.33  ### FIX THIS LATER
-	"""
+				#print ("GAAAA")
 	
 	var total = 0
 	for n in arrayOfPers.size():
@@ -495,6 +505,7 @@ func changePerBy(perType, amountIncoming):
 	
 	# UPDATE PERS WITH ARRAY OF PERS
 	updateDetails()
+
 
 func changePerTo(perType, amount):
 	var arrayOfPers = [chemPer, metPer, supPer, fightersPer]

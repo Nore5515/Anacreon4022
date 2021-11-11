@@ -93,7 +93,7 @@ func _on_ChemSlider_value_changed(value):
 		if clicking:
 			typeToChange = "chem"
 			changeToAmount = value/100
-			print (typeToChange, ": ", changeToAmount)
+			#print (typeToChange, ": ", changeToAmount)
 		
 		
 		#currentPlanet.changePerTo("chem", value/100)
@@ -115,6 +115,11 @@ func _on_MetSlider_value_changed(value):
 			$MetSlider.value = 100 - ($ChemSlider.value + $SupSlider.value + $FigSlider.value)
 		updateDetails()
 		#updatePlanet($ChemSlider.value/100, $MetSlider.value/100, $SupSlider.value/100, $FigSlider.value/100)
+	elif currentPlanet != null && displayOnly:
+		if clicking:
+			typeToChange = "met"
+			changeToAmount = value/100
+			#print (typeToChange, ": ", changeToAmount)
 	
 func _on_SupSlider_value_changed(value):
 	if currentPlanet != null && !displayOnly:
@@ -132,6 +137,11 @@ func _on_SupSlider_value_changed(value):
 			$SupSlider.value = 100 - ($MetSlider.value + $ChemSlider.value + $FigSlider.value)
 		updateDetails()
 		#updatePlanet($ChemSlider.value/100, $MetSlider.value/100, $SupSlider.value/100, $FigSlider.value/100)
+	elif currentPlanet != null && displayOnly:
+		if clicking:
+			typeToChange = "sup"
+			changeToAmount = value/100
+			#print (typeToChange, ": ", changeToAmount)
 	
 func _on_FigSlider_value_changed(value):
 	if currentPlanet != null && !displayOnly:
@@ -142,6 +152,11 @@ func _on_FigSlider_value_changed(value):
 		$SupSlider.value -= remainder * 0.5
 		updateDetails()
 		#updatePlanet($ChemSlider.value/100, $MetSlider.value/100, $SupSlider.value/100, $FigSlider.value/100)
+	elif currentPlanet != null && displayOnly:
+		if clicking:
+			typeToChange = "fig"
+			changeToAmount = value/100
+			#print (typeToChange, ": ", changeToAmount)
 
 
 func _on_ConfirmChange_pressed():
